@@ -11,6 +11,7 @@
     <header class="mb-4 text-center">
         <h1 class="fw-bold">News Focus</h1>
         <p class="text-secondary mb-0">AI・半導体・米国テック企業ニュースを見やすくチェックできるニュースアプリ</p>
+        <a href="/saved" class="d-inline-block mt-2">保存記事を見る</a>
     </header>
 
     <section class="card shadow-sm mb-4">
@@ -66,7 +67,23 @@
                                     type="button"
                                     class="btn btn-sm btn-secondary"
                                     disabled>URLなし</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled>保存（準備中）</button>
+                            <form th:if="${article.url != null and !#strings.isEmpty(article.url)}"
+                                  method="post"
+                                  action="/articles/save"
+                                  class="d-inline">
+                                <input type="hidden" name="title" th:value="${article.title}">
+                                <input type="hidden" name="description" th:value="${article.description}">
+                                <input type="hidden" name="url" th:value="${article.url}">
+                                <input type="hidden" name="imageUrl" th:value="${article.imageUrl}">
+                                <input type="hidden" name="sourceName" th:value="${article.sourceName}">
+                                <input type="hidden" name="publishedAt" th:value="${article.publishedAt}">
+                                <input type="hidden" name="theme" th:value="${article.theme}">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">保存</button>
+                            </form>
+                            <button th:unless="${article.url != null and !#strings.isEmpty(article.url)}"
+                                    type="button"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    disabled>保存不可</button>
                         </div>
                     </div>
                 </article>
