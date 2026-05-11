@@ -5,12 +5,18 @@ import com.example.newsapp.dto.CurrentsNewsItem;
 import com.example.newsapp.model.NewsArticle;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
 public class NewsService {
+    private static final Logger log = LoggerFactory.getLogger(NewsService.class);
+
     private final NewsApiClient newsApiClient;
 
     public NewsService(NewsApiClient newsApiClient) {
@@ -18,21 +24,31 @@ public class NewsService {
     }
 
     public List<NewsArticle> getNews(String keyword, String theme) {
-        String searchKeyword = resolveSearchKeyword(keyword, theme);
-        List<CurrentsNewsItem> items = newsApiClient.searchNews(searchKeyword);
+        String displayTheme = resolveDisplayTheme(keyword, theme);
+        List<String> candidates = resolveSearchKeywords(keyword, theme);
 
-        if (items.isEmpty()) {
-            return createDummyNews();
+        for (String candidate : candidates) {
+            log.info("Trying news search keyword: {}", candidate);
+            List<CurrentsNewsItem> items = newsApiClient.searchNews(candidate);
+            if (!items.isEmpty()) {
+                log.info("News search succeeded. keyword={}, count={}", candidate, items.size());
+                return mapToArticles(items, displayTheme);
+            }
         }
 
-        List<NewsArticle> result = new ArrayList<>();
-        for (CurrentsNewsItem item : items) {
-            result.add(mapToArticle(item, searchKeyword));
-        }
-        return result.isEmpty() ? createDummyNews() : result;
+        log.info("No news found for all keywords. fallback dummy news.");
+        return createDummyNews();
     }
 
-    private String resolveSearchKeyword(String keyword, String theme) {
+    private List<NewsArticle> mapToArticles(List<CurrentsNewsItem> items, String displayTheme) {
+        List<NewsArticle> result = new ArrayList<>();
+        for (CurrentsNewsItem item : items) {
+            result.add(mapToArticle(item, displayTheme));
+        }
+        return result;
+    }
+
+    private String resolveDisplayTheme(String keyword, String theme) {
         if (StringUtils.hasText(keyword)) {
             return keyword.trim();
         }
@@ -42,19 +58,42 @@ public class NewsService {
         return "AI";
     }
 
+    private List<String> resolveSearchKeywords(String keyword, String theme) {
+        if (StringUtils.hasText(keyword)) {
+            return toKeywordCandidates(keyword.trim());
+        }
+        if (StringUtils.hasText(theme)) {
+            return toThemeCandidates(theme);
+        }
+        return List.of("AI");
+    }
+
+    private List<String> toThemeCandidates(String theme) {
+        return switch (theme) {
+            case "ai" -> List.of("AI", "生成AI", "ChatGPT");
+            case "generative-ai" -> List.of("生成AI", "ChatGPT", "AI");
+            case "nvidia" -> List.of("NVIDIA", "AI");
+            case "tsmc" -> List.of("TSMC", "NVIDIA", "AI");
+            default -> List.of("AI");
+        };
+    }
+
+    private List<String> toKeywordCandidates(String keyword) {
+        List<String> candidates = switch (keyword) {
+            case "半導体" -> List.of("半導体", "NVIDIA", "TSMC", "AI");
+            default -> List.of(keyword);
+        };
+
+        Set<String> unique = new LinkedHashSet<>(candidates);
+        return new ArrayList<>(unique);
+    }
+
     private String toThemeKeyword(String theme) {
         return switch (theme) {
             case "ai" -> "AI";
             case "generative-ai" -> "生成AI";
-            case "it" -> "IT";
-            case "java" -> "Java";
-            case "semiconductor" -> "半導体";
-            case "stock" -> "株式投資";
-            case "japan-stock" -> "日本株";
-            case "us-stock" -> "米国株";
-            case "earnings" -> "決算";
-            case "fx" -> "為替";
-            case "interest-rate" -> "金利";
+            case "nvidia" -> "NVIDIA";
+            case "tsmc" -> "TSMC";
             default -> "AI";
         };
     }

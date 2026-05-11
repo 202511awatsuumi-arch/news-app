@@ -44,6 +44,8 @@ public class HomeController {
         return switch (theme) {
             case "ai" -> "AI";
             case "generative-ai" -> "生成AI";
+            case "nvidia" -> "NVIDIA";
+            case "tsmc" -> "TSMC";
             case "it" -> "IT";
             case "java" -> "Java";
             case "semiconductor" -> "半導体";

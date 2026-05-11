@@ -10,7 +10,7 @@
 <div class="container py-5">
     <header class="mb-4 text-center">
         <h1 class="fw-bold">News Focus</h1>
-        <p class="text-secondary mb-0">AI・IT・株式投資・経済ニュースを見やすくチェックできるニュースアプリ</p>
+        <p class="text-secondary mb-0">AI・半導体・米国テック企業ニュースを見やすくチェックできるニュースアプリ</p>
     </header>
 
     <section class="card shadow-sm mb-4">
@@ -22,7 +22,7 @@
                             name="keyword"
                             th:value="${keyword}"
                             class="form-control"
-                            placeholder="キーワードを入力 例: AI, 半導体, 米国株">
+                            placeholder="キーワードを入力 例: AI, NVIDIA, TSMC">
                 </div>
                 <div class="col-12 col-md-2 d-grid">
                     <button type="submit" class="btn btn-primary">検索</button>
@@ -33,27 +33,12 @@
 
     <section class="card shadow-sm mb-4">
         <div class="card-body">
-            <h2 class="h5 mb-3">AI・ITテーマ</h2>
+            <h2 class="h5 mb-3">AI・半導体・米国テック</h2>
             <div class="d-flex flex-wrap gap-2">
                 <a href="/?theme=ai" class="btn btn-outline-primary">AI</a>
                 <a href="/?theme=generative-ai" class="btn btn-outline-primary">生成AI</a>
-                <a href="/?theme=it" class="btn btn-outline-primary">IT</a>
-                <a href="/?theme=java" class="btn btn-outline-primary">Java</a>
-                <a href="/?theme=semiconductor" class="btn btn-outline-primary">半導体</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h2 class="h5 mb-3">投資・経済テーマ</h2>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="/?theme=stock" class="btn btn-outline-success">株式投資</a>
-                <a href="/?theme=japan-stock" class="btn btn-outline-success">日本株</a>
-                <a href="/?theme=us-stock" class="btn btn-outline-success">米国株</a>
-                <a href="/?theme=earnings" class="btn btn-outline-success">決算</a>
-                <a href="/?theme=fx" class="btn btn-outline-success">為替</a>
-                <a href="/?theme=interest-rate" class="btn btn-outline-success">金利</a>
+                <a href="/?theme=nvidia" class="btn btn-outline-primary">NVIDIA</a>
+                <a href="/?theme=tsmc" class="btn btn-outline-primary">TSMC</a>
             </div>
         </div>
     </section>
