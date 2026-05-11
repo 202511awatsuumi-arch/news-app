@@ -20,6 +20,7 @@
                     <input
                             type="text"
                             name="keyword"
+                            th:value="${keyword}"
                             class="form-control"
                             placeholder="キーワードを入力 例: AI, 半導体, 米国株">
                 </div>
@@ -47,68 +48,40 @@
         <div class="card-body">
             <h2 class="h5 mb-3">投資・経済テーマ</h2>
             <div class="d-flex flex-wrap gap-2">
-                <a href="/?theme=stock-investment" class="btn btn-outline-success">株式投資</a>
-                <a href="/?theme=japanese-stocks" class="btn btn-outline-success">日本株</a>
-                <a href="/?theme=us-stocks" class="btn btn-outline-success">米国株</a>
+                <a href="/?theme=stock" class="btn btn-outline-success">株式投資</a>
+                <a href="/?theme=japan-stock" class="btn btn-outline-success">日本株</a>
+                <a href="/?theme=us-stock" class="btn btn-outline-success">米国株</a>
                 <a href="/?theme=earnings" class="btn btn-outline-success">決算</a>
-                <a href="/?theme=exchange-rate" class="btn btn-outline-success">為替</a>
+                <a href="/?theme=fx" class="btn btn-outline-success">為替</a>
                 <a href="/?theme=interest-rate" class="btn btn-outline-success">金利</a>
             </div>
         </div>
     </section>
 
     <section>
-        <h2 class="h4 mb-3">注目ニュース（ダミー）</h2>
+        <h2 class="h4 mb-3" th:text="${displayTitle}">AI の最新ニュース</h2>
         <div class="row g-3">
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-4" th:each="article : ${articles}">
                 <article class="card h-100 shadow-sm">
                     <div class="card-body d-flex flex-column">
-                        <span class="badge text-bg-primary mb-2 align-self-start">AIニュース</span>
-                        <h3 class="h6">生成AIツールの企業導入が加速、業務効率化の実例が増加</h3>
-                        <p class="text-secondary small">国内企業で生成AIの本格導入が進み、レポート作成や顧客対応の自動化など具体的な成果が報告されています。</p>
+                        <span class="badge text-bg-primary mb-2 align-self-start" th:text="${article.theme}">テーマ</span>
+                        <h3 class="h6" th:text="${article.title}">ニュースタイトル</h3>
+                        <p class="text-secondary small" th:text="${article.description}">ニュース概要</p>
                         <ul class="list-unstyled small text-muted mt-auto mb-3">
-                            <li>媒体名: Tech Daily</li>
-                            <li>公開日: 2026-05-11</li>
+                            <li>媒体名: <span th:text="${article.sourceName}">ニュース提供元</span></li>
+                            <li>公開日: <span th:text="${article.publishedAt}">2026-05-11</span></li>
                         </ul>
                         <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-sm btn-primary">続きを読む</a>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">保存</button>
-                        </div>
-                    </div>
-                </article>
-            </div>
-
-            <div class="col-12 col-lg-4">
-                <article class="card h-100 shadow-sm">
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge text-bg-success mb-2 align-self-start">株式投資ニュース</span>
-                        <h3 class="h6">決算発表シーズン本格化、注目セクターに資金が集中</h3>
-                        <p class="text-secondary small">主要企業の決算発表を受けて、半導体やクラウド関連銘柄に買いが入り、相場の物色動向が鮮明になっています。</p>
-                        <ul class="list-unstyled small text-muted mt-auto mb-3">
-                            <li>媒体名: Market Watcher</li>
-                            <li>公開日: 2026-05-10</li>
-                        </ul>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-sm btn-primary">続きを読む</a>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">保存</button>
-                        </div>
-                    </div>
-                </article>
-            </div>
-
-            <div class="col-12 col-lg-4">
-                <article class="card h-100 shadow-sm">
-                    <div class="card-body d-flex flex-column">
-                        <span class="badge text-bg-warning mb-2 align-self-start">為替ニュース</span>
-                        <h3 class="h6">米金融政策の見通しで為替が変動、ドル円は方向感を探る展開</h3>
-                        <p class="text-secondary small">金利見通しに関する発言を受けて為替市場の値動きが大きくなり、投資家は次回会合の内容に注目しています。</p>
-                        <ul class="list-unstyled small text-muted mt-auto mb-3">
-                            <li>媒体名: Economic Times JP</li>
-                            <li>公開日: 2026-05-09</li>
-                        </ul>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="btn btn-sm btn-primary">続きを読む</a>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">保存</button>
+                            <a th:if="${article.url != null and !#strings.isEmpty(article.url)}"
+                               th:href="${article.url}"
+                               class="btn btn-sm btn-primary"
+                               target="_blank"
+                               rel="noopener noreferrer">続きを読む</a>
+                            <button th:unless="${article.url != null and !#strings.isEmpty(article.url)}"
+                                    type="button"
+                                    class="btn btn-sm btn-secondary"
+                                    disabled>URLなし</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled>保存（準備中）</button>
                         </div>
                     </div>
                 </article>
